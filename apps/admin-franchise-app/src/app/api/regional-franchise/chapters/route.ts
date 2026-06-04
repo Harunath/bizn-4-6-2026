@@ -30,7 +30,6 @@ export const GET = async () => {
 			);
 		}
 
-		// Fetch chapters for the region with club counts
 		const chapters = await prisma.chapter.findMany({
 			where: { regionId },
 			select: {
@@ -44,7 +43,6 @@ export const GET = async () => {
 			orderBy: { name: "asc" }, // default sort; UI can still re-sort client-side
 		});
 
-		// Flatten _count into clubCount for easier use on the client
 		const data = chapters.map((c) => ({
 			id: c.id,
 			name: c.name,
