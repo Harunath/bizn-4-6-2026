@@ -38,6 +38,9 @@ export default function LoginPage() {
 				case "REGIONAL_FRANCHISE":
 					router.replace("/regional-franchise/dashboard");
 					return;
+				case "CHAPTER_FRANCHISE":
+					router.replace("/chapter-franchise/dashboard");
+					return;
 				default:
 					// Bad/missing franchiseType -> sign out safely
 					signOut({ redirect: false });

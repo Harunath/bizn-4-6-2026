@@ -3,7 +3,6 @@
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserMembershipType } from "@repo/db/client";
 import { toast } from "react-toastify";
 
 type ReferralType = "SELF" | "THIRD_PARTY";
@@ -13,12 +12,6 @@ interface User {
 	firstname: string;
 	lastname: string;
 	email: string;
-	homeClub: {
-		name: string;
-		chapter: {
-			name: string;
-		};
-	};
 }
 type PriorityType = "LEVEL_1" | "LEVEL_2" | "LEVEL_3" | "LEVEL_4" | "LEVEL_5";
 
@@ -28,7 +21,6 @@ export default function ReferralForm() {
 	const [receiverOptions, setReceiverOptions] = useState<User[]>([]);
 	const [selectedReceiver, setSelectedReceiver] = useState<User | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
-	const [uri, setUri] = useState("");
 	const router = useRouter();
 
 	const { data: session, status } = useSession();
@@ -41,21 +33,9 @@ export default function ReferralForm() {
 			router.push("/login");
 			return;
 		}
-		if (session) {
-			switch (session.user.membershipType) {
-				case UserMembershipType.VIP:
-					setUri("vip");
-					break;
-				case UserMembershipType.GOLD:
-					setUri("gold");
-					break;
-				case UserMembershipType.FREE:
-					setUri("free");
-					break;
-				default:
-					unAuthorizedUser();
-					router.push("/login");
-			}
+		if (!session || !session.user || !session.user.chapterId) {
+			unAuthorizedUser();
+			router.push("/login");
 		}
 	}, [status]);
 
@@ -88,7 +68,7 @@ export default function ReferralForm() {
 			console.log("loading", true);
 
 			try {
-				const res = await fetch(`/api/${uri}/referral/get-user`, {
+				const res = await fetch(`/api/users/referral/get-user`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ finder: receiverQuery }),
@@ -115,7 +95,7 @@ export default function ReferralForm() {
 			clearTimeout(delayDebounce);
 			controller.abort();
 		};
-	}, [receiverQuery, uri]);
+	}, [receiverQuery]);
 
 	const handleSubmit = async () => {
 		if (!selectedReceiver?.id) return alert("Please select a receiver");
@@ -124,7 +104,7 @@ export default function ReferralForm() {
 		}
 
 		setSubmitting(true);
-		const res = await fetch(`/api/${uri}/referral`, {
+		const res = await fetch(`/api/users/referral`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({
@@ -223,13 +203,12 @@ export default function ReferralForm() {
 								onClick={() => {
 									setSelectedReceiver(user);
 									setReceiverQuery(
-										`${user.firstname + " " + user.lastname} (${user.email})`
+										`${user.firstname + " " + user.lastname} (${user.email})`,
 									);
 									setReceiverOptions([]);
 								}}
 								className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm">
 								{user.firstname} {user.lastname} - {user.email} -{" "}
-								{user.homeClub.name} - {user.homeClub.chapter.name}
 							</li>
 						))}
 					</ul>

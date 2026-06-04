@@ -30,8 +30,7 @@ function reviveProfile(w: ProfilePropsWire): ProfileProps {
 		firstname: w.firstname,
 		lastname: w.lastname,
 		email: w.email,
-		homeClubId: w.homeClubId,
-		membershipType: w.membershipType,
+		chapterId: w.chapterId,
 
 		// ✅ handle nullable relation + fill defaults for possibly-undefined fields
 		businessDetails: {
@@ -52,9 +51,6 @@ function reviveProfile(w: ProfilePropsWire): ProfileProps {
 		// or provide a fallback here:
 		membershipStartDate: reviveDate(w.membershipStartDate)!,
 		membershipEndDate: reviveDate(w.membershipEndDate)!,
-
-		leadingChapterId: w.leadingChapterId,
-		leadingClubId: w.leadingClubId,
 
 		createdAt: reviveDate(w.createdAt)!,
 		updatedAt: reviveDate(w.updatedAt)!,

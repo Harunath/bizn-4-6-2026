@@ -1,5 +1,4 @@
 import React from "react";
-import AdminUserDetail from "../../../../../../../components/regional-franchise/clubs/user/AdminUserDetail";
 
 const page = async ({
 	params,
@@ -9,7 +8,12 @@ const page = async ({
 	}>;
 }) => {
 	const slug = await params;
-	return <AdminUserDetail userId={slug.id} />;
+	return (
+		<>
+			<div className="text-2xl font-bold">chapter id : {slug.id}</div>
+			<p>Chapter members</p>
+		</>
+	);
 };
 
 export default page;

@@ -26,7 +26,7 @@ export const GET = async () => {
 		if (!regionId) {
 			return NextResponse.json(
 				{ message: "User or region do not exist" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 
@@ -40,7 +40,6 @@ export const GET = async () => {
 				regionId: true,
 				description: true,
 				updatedAt: true,
-				_count: { select: { clubs: true } },
 			},
 			orderBy: { name: "asc" }, // default sort; UI can still re-sort client-side
 		});
@@ -53,7 +52,6 @@ export const GET = async () => {
 			regionId: c.regionId,
 			description: c.description,
 			updatedAt: c.updatedAt,
-			clubCount: c._count.clubs,
 		}));
 
 		return NextResponse.json({ message: "success", data }, { status: 200 });
@@ -61,7 +59,7 @@ export const GET = async () => {
 		console.error("[GET_CHAPTERS]", e);
 		return NextResponse.json(
 			{ message: "Internal Service Error" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 };
@@ -77,7 +75,7 @@ export const POST = async (req: NextRequest) => {
 		if (!name || !code) {
 			return NextResponse.json(
 				{ message: "name or code are missing" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 		const user = await prisma.franchiseAdmin.findUnique({
@@ -100,7 +98,7 @@ export const POST = async (req: NextRequest) => {
 		if (!user || !user.franchise.id || !user.franchise.region) {
 			return NextResponse.json(
 				{ message: "User or region do exist" },
-				{ status: 400 }
+				{ status: 400 },
 			);
 		}
 		const chapter = await prisma.chapter.create({
@@ -114,13 +112,13 @@ export const POST = async (req: NextRequest) => {
 		});
 		return NextResponse.json(
 			{ message: "success", data: chapter },
-			{ status: 200 }
+			{ status: 200 },
 		);
 	} catch (e) {
 		console.log(e);
 		return NextResponse.json(
 			{ message: "Internal Service Error" },
-			{ status: 500 }
+			{ status: 500 },
 		);
 	}
 };

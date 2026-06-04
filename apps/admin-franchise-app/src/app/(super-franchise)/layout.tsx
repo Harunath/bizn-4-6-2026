@@ -16,7 +16,7 @@ export default async function Layout({
 
 	return (
 		<WithRole allowedRole={FranchiseType.SUPER_FRANCHISE} session={session}>
-			<div className=" w-screen">
+			<div className=" w-screen bg-neutral-50 text-neutral-950 min-h-screen">
 				<Navbar links={links} />
 				<div className="pt-16 px-2">
 					<BackButton />

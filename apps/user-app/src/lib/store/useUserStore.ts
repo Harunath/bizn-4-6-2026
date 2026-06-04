@@ -1,169 +1,6 @@
-// // lib/store/useUserStore.ts
-// import { create } from "zustand";
-// import { persist, createJSONStorage } from "zustand/middleware";
-// import type { UserMembershipType } from "@repo/db/client";
-
-// type BusinessDetails = {
-// 	id: string;
-// 	userId: string;
-// 	businessName: string;
-// 	images: string[];
-// 	panNumber: string | null;
-// 	panNumberVerified: boolean;
-// 	tanNumber: string | null;
-// 	gstNumber: string | null;
-// 	gstNumberVerified: boolean;
-// 	verified: boolean;
-// 	companyName: string | null;
-// 	companyLogoUrl: string | null;
-// 	gstRegisteredState: string | null;
-// 	BusinessDescription: string | null;
-// 	keywords: string | null;
-// 	generalCategory: string | null;
-// 	categoryId: string | null;
-// 	createdAt: Date; // persisted JSON → strings
-// 	updatedAt: Date;
-// };
-
-// type ProfileProps = {
-// 	id: string;
-// 	firstname: string;
-// 	lastname: string;
-// 	email: string;
-// 	homeClubId: string | null;
-// 	membershipType: UserMembershipType;
-// 	businessDetails: BusinessDetails;
-
-// 	emailVerified: boolean;
-// 	phone: string;
-// 	phoneVerified: boolean;
-// 	registrationCompleted: boolean;
-// 	profileImage: string | null;
-// 	deleted: boolean;
-// 	deactivated: boolean;
-// 	membershipStartDate: Date;
-// 	membershipEndDate: Date;
-
-// 	leadingChapterId: string | null;
-// 	leadingClubId: string | null;
-
-// 	createdAt: Date;
-// 	updatedAt: Date;
-// };
-
-// type ContactDetails = {
-// 	phone: string | null;
-// 	createdAt: Date;
-// 	updatedAt: Date;
-// 	userId: string;
-// 	mobile: string | null;
-// 	website: string | null;
-// 	links: string[];
-// 	houseNo: string | null;
-// 	pager: string | null;
-// 	voiceMail: string | null;
-// };
-
-// type UserStore = {
-// 	user: ProfileProps | null;
-// 	contactDetails: ContactDetails | null;
-// 	loading: boolean;
-// 	error: string | null;
-// 	initialized: boolean; // we’ve fetched at least once for this tab
-// 	lastFetchedAt: number | null;
-
-// 	fetchUserAndContact: (
-// 		userId: string,
-// 		opts?: { force?: boolean }
-// 	) => Promise<void>;
-// 	setFromInitial: (u: ProfileProps, c: ContactDetails | null) => void;
-// 	reset: () => void;
-// };
-
-// export const useUserStore = create<UserStore>()(
-// 	persist(
-// 		(set, get) => ({
-// 			user: null,
-// 			contactDetails: null,
-// 			loading: false,
-// 			error: null,
-// 			initialized: false,
-// 			lastFetchedAt: null,
-
-// 			setFromInitial: (u, c) => {
-// 				set({
-// 					user: u,
-// 					contactDetails: c,
-// 					initialized: true,
-// 					lastFetchedAt: Date.now(),
-// 				});
-// 			},
-
-// 			reset: () => {
-// 				set({
-// 					user: null,
-// 					contactDetails: null,
-// 					loading: false,
-// 					error: null,
-// 					initialized: false,
-// 					lastFetchedAt: null,
-// 				});
-// 			},
-
-// 			fetchUserAndContact: async (userId, opts) => {
-// 				const { initialized, user } = get();
-// 				const force = opts?.force ?? false;
-
-// 				// Guard: if we already have the same user and we’re initialized, skip
-// 				if (!force && initialized && user?.id === userId) return;
-
-// 				set({ loading: true, error: null });
-// 				try {
-// 					const [userRes, contactRes] = await Promise.all([
-// 						fetch(`/api/user/${userId}`, { cache: "no-store" }),
-// 						fetch(`/api/contact-details/${userId}`, { cache: "no-store" }),
-// 					]);
-
-// 					const userJson = await userRes.json();
-// 					if (!userRes.ok || !userJson?.data) {
-// 						throw new Error(userJson?.message || "Failed to fetch user");
-// 					}
-
-// 					const contactJson = await contactRes.json();
-
-// 					set({
-// 						user: userJson.data as ProfileProps,
-// 						contactDetails: (contactJson?.data as ContactDetails) ?? null,
-// 						loading: false,
-// 						initialized: true,
-// 						lastFetchedAt: Date.now(),
-// 					});
-// 				} catch (err) {
-// 					set({
-// 						error: err instanceof Error ? err.message : "Unknown error",
-// 						loading: false,
-// 					});
-// 				}
-// 			},
-// 		}),
-// 		{
-// 			name: "bn-user", // storage key
-// 			// sessionStorage keeps it per tab; switch to localStorage if you want cross-tab persistence
-// 			storage: createJSONStorage(() => sessionStorage),
-// 			partialize: (s) => ({
-// 				user: s.user,
-// 				contactDetails: s.contactDetails,
-// 				initialized: s.initialized,
-// 				lastFetchedAt: s.lastFetchedAt,
-// 			}),
-// 		}
-// 	)
-// );
-
 // lib/store/useUserStore.ts
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import type { UserMembershipType } from "@repo/db/client";
 
 /** ── Domain types ────────────────────────────────────────────────────────── */
 
@@ -194,8 +31,7 @@ export interface ProfileProps {
 	firstname: string;
 	lastname: string;
 	email: string;
-	homeClubId: string | null;
-	membershipType: UserMembershipType;
+	chapterId: string;
 	businessDetails: BusinessDetails;
 
 	emailVerified: boolean;
@@ -207,9 +43,6 @@ export interface ProfileProps {
 	deactivated: boolean;
 	membershipStartDate: Date;
 	membershipEndDate: Date;
-
-	leadingChapterId: string | null;
-	leadingClubId: string | null;
 
 	createdAt: Date;
 	updatedAt: Date;
@@ -316,6 +149,6 @@ export const useUserStore = create<UserStore>()(
 					p.contactDetails = reviveDeep<ContactDetails>(p.contactDetails);
 				return persisted as unknown as UserStore;
 			},
-		}
-	)
+		},
+	),
 );

@@ -1,17 +1,13 @@
-import prisma, { UserMembershipType } from "@repo/db/client";
+import prisma from "@repo/db/client";
 import Link from "next/link";
 import React from "react";
 
 async function page({ params }: { params: Promise<{ chapterId: string }> }) {
 	const { chapterId } = await params;
-	const clubs = await prisma.club.findMany({
-		where: { chapterId },
-		select: { id: true },
-	});
+
 	const members = await prisma.user.findMany({
 		where: {
-			membershipType: UserMembershipType.VIP,
-			homeClubId: { in: clubs.map((club) => club.id) },
+			chapterId: chapterId,
 		},
 	});
 	return (

@@ -28,8 +28,7 @@ export async function refreshProfile(): Promise<RefreshProfileResult> {
 				firstname: true,
 				lastname: true,
 				email: true,
-				homeClubId: true,
-				membershipType: true, // enum: UserMembershipType
+				chapterId: true,
 				emailVerified: true,
 				phone: true,
 				phoneVerified: true,
@@ -39,8 +38,6 @@ export async function refreshProfile(): Promise<RefreshProfileResult> {
 				deactivated: true,
 				membershipStartDate: true,
 				membershipEndDate: true,
-				leadingChapterId: true,
-				leadingClubId: true,
 				createdAt: true,
 				updatedAt: true,
 				// include related BusinessDetails and shape it

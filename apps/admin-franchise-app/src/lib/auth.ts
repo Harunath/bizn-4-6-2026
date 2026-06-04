@@ -1,6 +1,5 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import { Session } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import prisma, { FranchiseType } from "@repo/db/client";
@@ -8,11 +7,6 @@ import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
-		// Gmail Authentication
-		GoogleProvider({
-			clientId: process.env.GOOGLE_CLIENT_ID!,
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-		}),
 		CredentialsProvider({
 			name: "Credentials",
 			credentials: {
@@ -39,7 +33,7 @@ export const authOptions: NextAuthOptions = {
 					// Verify password
 					const isValidPassword = await bcrypt.compare(
 						credentials.password,
-						franchiseAdmin.password
+						franchiseAdmin.password,
 					);
 					if (!isValidPassword) {
 						throw new Error("Invalid password");
@@ -70,7 +64,7 @@ export const authOptions: NextAuthOptions = {
 					// Verify password
 					const isValidPassword = await bcrypt.compare(
 						credentials.password,
-						admin.password
+						admin.password,
 					);
 					if (!isValidPassword) {
 						throw new Error("Invalid password");
@@ -99,7 +93,6 @@ export const authOptions: NextAuthOptions = {
 
 			// If user doesn't exist, create a new record
 			if (admin) {
-				console.log(admin, " admin");
 				return true;
 			}
 			const franchiseAdmin = await prisma.franchiseAdmin.findUnique({
@@ -108,7 +101,6 @@ export const authOptions: NextAuthOptions = {
 				},
 			});
 			if (franchiseAdmin) {
-				console.log("franchise admin :", franchiseAdmin);
 				return true;
 			}
 			return "/unauthorized";

@@ -2,7 +2,6 @@
 "use server";
 
 import prisma from "@repo/db/client";
-import type { UserMembershipType } from "@repo/db/client";
 
 // Wire types = Dates as string (safe to serialize to client)
 export interface BusinessDetailsWire {
@@ -32,8 +31,7 @@ export interface ProfilePropsWire {
 	firstname: string;
 	lastname: string;
 	email: string;
-	homeClubId: string | null;
-	membershipType: UserMembershipType;
+	chapterId: string;
 	businessDetails: BusinessDetailsWire;
 
 	emailVerified: boolean;
@@ -45,9 +43,6 @@ export interface ProfilePropsWire {
 	deactivated: boolean;
 	membershipStartDate: string;
 	membershipEndDate: string;
-
-	leadingChapterId: string | null;
-	leadingClubId: string | null;
 
 	createdAt: string;
 	updatedAt: string;
@@ -78,8 +73,7 @@ export async function getProfileByUserId(userId: string): Promise<{
 				firstname: true,
 				lastname: true,
 				email: true,
-				homeClubId: true,
-				membershipType: true,
+				chapterId: true,
 				emailVerified: true,
 				phone: true,
 				phoneVerified: true,
@@ -89,8 +83,6 @@ export async function getProfileByUserId(userId: string): Promise<{
 				deactivated: true,
 				membershipStartDate: true,
 				membershipEndDate: true,
-				leadingChapterId: true,
-				leadingClubId: true,
 				createdAt: true,
 				updatedAt: true,
 				businessDetails: {

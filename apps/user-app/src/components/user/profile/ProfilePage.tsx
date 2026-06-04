@@ -1,12 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import { useSession } from "next-auth/react";
-import { UserMembershipType } from "@repo/db/client";
 import { RiVerifiedBadgeLine } from "react-icons/ri";
 import { GoUnverified } from "react-icons/go";
 import Image from "next/image";
 import Link from "next/link";
-import Upgrade from "../../common/Upgrade";
 import { AnimatePresence, motion } from "framer-motion";
 import {
 	FiChevronRight,
@@ -25,36 +23,14 @@ import {
 import { HiOutlineBookmark } from "react-icons/hi";
 import { ProfileProps, ContactDetails } from "../../../lib/store/useUserStore";
 
-// Cloudinary badge URLs
-const BADGE_URLS: Record<UserMembershipType, string> = {
-	FREE: "https://res.cloudinary.com/degrggosz/image/upload/v1750931312/5_iqrq2u.png",
-	GOLD: "https://res.cloudinary.com/degrggosz/image/upload/v1750931298/2_ghut8s.png",
-	VIP: "https://res.cloudinary.com/degrggosz/image/upload/v1750931311/3_xolgia.png",
-};
-
 interface ProfilePageProps {
 	user: ProfileProps;
 	contactDetailsRes: ContactDetails | null;
 }
 
-const SetMembershipUrl = (membershipType: UserMembershipType) => {
-	switch (membershipType) {
-		case UserMembershipType.VIP:
-			return "vip";
-		case UserMembershipType.GOLD:
-			return "gold";
-		case UserMembershipType.FREE:
-			return "free";
-		default:
-			return "";
-	}
-};
-
 const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 	const [showLinksModal, setShowLinksModal] = useState(false);
 	const { data: session } = useSession();
-	const membershipType =
-		session?.user.membershipType ?? UserMembershipType.FREE;
 
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 py-12 px-4 sm:px-6 lg:px-8 bg-white">
@@ -81,37 +57,11 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 						height={128}
 						className="block lg:hidden w-32 h-32 rounded-full object-cover border-4 border-gray-100 shadow"
 					/>
-
-					{/* Badge Overlay */}
-					{BADGE_URLS[membershipType] && (
-						<div className="absolute -top-0.5 -right-0.5">
-							<Image
-								src={BADGE_URLS[membershipType]}
-								alt={`${membershipType} badge`}
-								width={80}
-								height={80}
-								className="w-20 h-20 "
-							/>
-						</div>
-					)}
 				</div>
 
 				<p className="text-lg text-center font-medium text-black border-b pb-2">
 					{session?.user.firstname} {session?.user.lastname}
 				</p>
-
-				<div className="mt-6 bg-slate-150 px-5 py-3 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between flex-wrap gap-2">
-					<div className="flex items-baseline gap-2">
-						<p className="text-sm text-gray-600 font-medium">
-							Membership Type:
-						</p>
-						<p className="text-base font-semibold text-gray-900">
-							{membershipType}
-						</p>
-					</div>
-
-					{membershipType !== UserMembershipType.VIP && <Upgrade />}
-				</div>
 
 				<div className="mt-6 bg-slate-100 px-5 py-3 rounded-xl shadow-sm border border-gray-200 flex items-center justify-between flex-wrap gap-2">
 					<div className="flex items-baseline gap-2">
@@ -129,7 +79,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 				{user && (
 					<div className="relative border border-gray-200 shadow-2xl p-6 text-base font-medium text-gray-800 bg-slate-100">
 						<Link
-							href={`/${SetMembershipUrl(membershipType)}/profile/personal-details`}
+							href={`/profile/personal-details`}
 							className="absolute right-4 top-4 text-red-600 text-sm font-medium flex items-center gap-x-1">
 							<FiEdit className="text-base" />
 							<span className="font-semibold">Edit</span>
@@ -201,7 +151,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 																	{link}
 																</a>
 															</li>
-														)
+														),
 													)}
 												</ul>
 											</div>
@@ -217,7 +167,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 				{user && (
 					<div className="relative border border-gray-200 shadow-2xl p-6 text-base font-medium text-gray-800 bg-slate-100">
 						<Link
-							href={`/${SetMembershipUrl(membershipType)}/profile/bios`}
+							href={`/profile/bios`}
 							className="absolute right-4 top-4 opacity-70 hover:opacity-100 text-red-600 text-sm flex items-center gap-1">
 							<FiEdit className="text-base" />
 							<span className="font-semibold">Edit</span>
@@ -232,7 +182,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 							].map((item) => (
 								<Link
 									key={item.label}
-									href={`/${SetMembershipUrl(membershipType)}/profile/${item.slug}`}
+									href={`/profile/${item.slug}`}
 									className="flex justify-between items-center px-5 py-4 hover:bg-gray-50">
 									<span>{item.label}</span>
 									<FiChevronRight className="text-gray-400" />
@@ -247,7 +197,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 			{user?.businessDetails && (
 				<div className="relative border border-gray-200 shadow-2xl p-6 text-base font-medium text-gray-800 bg-slate-100 h-[610px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
 					<Link
-						href={`/${SetMembershipUrl(membershipType)}/profile/business-details`}
+						href={`/profile/business-details`}
 						className="absolute right-4 top-4 text-red-600 text-sm font-medium flex items-center gap-x-1">
 						<FiEdit className="text-base" />
 						<span className="font-semibold">Edit</span>
@@ -266,13 +216,6 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 							icon={<FiHome />}
 							value={`Company Name: ${user.businessDetails.companyName || "—"}`}
 						/>
-
-						{membershipType === "VIP" && (
-							<InfoRow
-								icon={<FiTag />}
-								value={`Category ID: ${user.businessDetails.categoryId || "—"}`}
-							/>
-						)}
 
 						<InfoRow
 							icon={<FiList />}
@@ -306,7 +249,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 												className="object-contain"
 											/>
 										</div>
-									)
+									),
 								)}
 							</div>
 						</div>

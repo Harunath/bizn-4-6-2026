@@ -3,12 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
-import {
-	Referral,
-	ReferralStatus,
-	Testimonials,
-	UserMembershipType,
-} from "@repo/db/client";
+import { Referral, ReferralStatus, Testimonials } from "@repo/db/client";
 import { IoMdArrowDropdown } from "react-icons/io";
 
 interface UserType {
@@ -42,16 +37,6 @@ export default function CreatedReferrals() {
 	const [loading, setLoading] = useState(true);
 	const [totalPages, setTotalPages] = useState(1);
 
-	const membershipEndpoints: Record<UserMembershipType, string> = {
-		FREE: "free",
-		GOLD: "gold",
-		VIP: "vip",
-	};
-
-	const userMembershipType = session?.user
-		?.membershipType as UserMembershipType;
-	const endpoint = membershipEndpoints[userMembershipType] || "no-membership";
-
 	const searchParams = useSearchParams();
 	const router = useRouter();
 	const pathname = usePathname();
@@ -74,7 +59,7 @@ export default function CreatedReferrals() {
 		setLocalStatusSelections((prev) =>
 			prev.includes(status)
 				? prev.filter((s) => s !== status)
-				: [...prev, status]
+				: [...prev, status],
 		);
 	};
 
@@ -122,8 +107,8 @@ export default function CreatedReferrals() {
 			setLoading(true);
 			try {
 				const res = await fetch(
-					`/api/${endpoint}/referral/created-referrals?${queryParams.toString()}`,
-					{ cache: "no-store" }
+					`/api/users/referral/created-referrals?${queryParams.toString()}`,
+					{ cache: "no-store" },
 				);
 				if (!res.ok) throw new Error("Failed to fetch referrals");
 

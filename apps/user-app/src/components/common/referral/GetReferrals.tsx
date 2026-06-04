@@ -4,12 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import ReferralDetailsDialog from "./ReferralDetailsDialog";
-import {
-	Referral,
-	ReferralStatus,
-	ThankYouNote,
-	UserMembershipType,
-} from "@repo/db/client";
+import { Referral, ReferralStatus, ThankYouNote } from "@repo/db/client";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { ThankYouNoteDialog } from "./ThankYouNoteDialog";
 
@@ -62,7 +57,7 @@ export default function GetReferrals() {
 		setLocalStatusSelections((prev) =>
 			prev.includes(status)
 				? prev.filter((s) => s !== status)
-				: [...prev, status]
+				: [...prev, status],
 		);
 	};
 
@@ -85,12 +80,6 @@ export default function GetReferrals() {
 		setDropdownOpen(false);
 	};
 
-	const membershipEndpoints: Record<UserMembershipType, string> = {
-		FREE: "free",
-		GOLD: "gold",
-		VIP: "vip",
-	};
-
 	const updateQueryParam = (key: string, value: string | null) => {
 		const params = new URLSearchParams(searchParams.toString());
 
@@ -109,9 +98,6 @@ export default function GetReferrals() {
 
 	useEffect(() => {
 		if (status !== "authenticated") return;
-		const membershipType = session.user.membershipType as UserMembershipType;
-
-		const endpoint = membershipEndpoints[membershipType] || "no-membership";
 
 		const queryParams = new URLSearchParams();
 
@@ -123,10 +109,10 @@ export default function GetReferrals() {
 			setLoading(true);
 			try {
 				const res = await fetch(
-					`/api/${endpoint}/referral?${queryParams.toString()}`,
+					`/api/users/referral?${queryParams.toString()}`,
 					{
 						cache: "no-store",
-					}
+					},
 				);
 
 				if (!res.ok) throw new Error("Failed to fetch referrals");

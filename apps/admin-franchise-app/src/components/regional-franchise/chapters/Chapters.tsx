@@ -13,7 +13,6 @@ interface ChaptersType {
 	regionId: string;
 	description: string | null;
 	updatedAt: string;
-	clubCount: string;
 }
 
 const Chapters = () => {
@@ -133,9 +132,6 @@ const Chapters = () => {
 								<div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-gray-500">
 									<span className="rounded-md bg-gray-50 px-2 py-1">
 										Region: {chapter.regionId.slice(0, 8)}…
-									</span>
-									<span className="rounded-md bg-gray-50 px-2 py-1">
-										Clubs: {chapter.clubCount ? chapter.clubCount : 0}
 									</span>
 									<span className="rounded-md bg-gray-50 px-2 py-1">
 										Updated: {new Date(chapter.updatedAt).toLocaleDateString()}
