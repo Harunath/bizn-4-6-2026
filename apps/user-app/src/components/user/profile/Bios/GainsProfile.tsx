@@ -163,7 +163,7 @@ export default function GainsProfile({ userId }: { userId: string }) {
 						}
 						onKeyDown={handleKeyDown}
 						placeholder="Type and press Enter"
-						className="flex-grow bg-white border border-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+						className="grow bg-white border border-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
 					/>
 					<button
 						type="button"

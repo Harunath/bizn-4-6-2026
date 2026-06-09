@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+@theme {
+	--font-poppins: var(--font-poppins);
+}
+
+@theme {
+	--font-dancing_script: var(--font-dancing_script);
+}
+
 :root {
 	--background: #ffffff;
 	--foreground: #171717;

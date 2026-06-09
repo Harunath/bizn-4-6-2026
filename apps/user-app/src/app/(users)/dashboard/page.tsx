@@ -14,7 +14,7 @@ const Page = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-16 px-4 flex flex-col items-center">
+		<div className="min-h-screen bg-linear-to-b from-white to-gray-50 py-16 px-4 flex flex-col items-center">
 			<h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 text-center">
 				Your Dashboard
 			</h1>

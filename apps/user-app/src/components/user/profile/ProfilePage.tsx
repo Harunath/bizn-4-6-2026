@@ -241,7 +241,7 @@ const ProfilePage = ({ user, contactDetailsRes }: ProfilePageProps) => {
 									(image: string, index: number) => (
 										<div
 											key={index}
-											className="relative flex-shrink-0 w-60 h-60 snap-center rounded-lg border border-gray-300 shadow-sm bg-white overflow-hidden">
+											className="relative shrink-0 w-60 h-60 snap-center rounded-lg border border-gray-300 shadow-sm bg-white overflow-hidden">
 											<Image
 												src={image}
 												alt={`Business image ${index + 1}`}
@@ -274,7 +274,7 @@ const InfoRow = ({
 	<div className="flex items-start gap-x-3">
 		<div className="mt-1">{icon}</div>
 		<div className="flex flex-wrap items-center gap-x-2 text-gray-800">
-			<span className="break-words">{value}</span>
+			<span className="wrap-break-word">{value}</span>
 			{verified !== undefined &&
 				(verified ? (
 					<RiVerifiedBadgeLine className="text-green-400" />

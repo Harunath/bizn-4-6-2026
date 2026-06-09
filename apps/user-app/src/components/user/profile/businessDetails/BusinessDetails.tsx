@@ -31,11 +31,9 @@ export default function BusinessDetails() {
 	const session = useSession();
 	const [userId, setUserId] = useState<string | null>(null);
 
-	useEffect(() => {
-		if (session.status === "authenticated" && session.data.user?.id) {
-			setUserId(session.data.user.id);
-		}
-	}, [session]);
+	if (session.status === "authenticated" && session.data.user?.id) {
+		setUserId(session?.data?.user?.id);
+	}
 
 	useEffect(() => {
 		if (!userId) return;
@@ -61,7 +59,7 @@ export default function BusinessDetails() {
 				}
 			} catch (error) {
 				toast.error(
-					error instanceof Error ? error.message : "Something went wrong"
+					error instanceof Error ? error.message : "Something went wrong",
 				);
 			} finally {
 				setInitialLoading(false);
@@ -129,7 +127,7 @@ export default function BusinessDetails() {
 			toast.success("Business details updated successfully.");
 		} catch (error) {
 			toast.error(
-				error instanceof Error ? error.message : "Something went wrong"
+				error instanceof Error ? error.message : "Something went wrong",
 			);
 		} finally {
 			setIsSubmitting(false);
@@ -212,7 +210,7 @@ export default function BusinessDetails() {
 									handleAddKeyword();
 								}
 							}}
-							className="flex-grow bg-white border border-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
+							className="grow bg-white border border-black rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-600"
 						/>
 						<button
 							type="button"
