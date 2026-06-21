@@ -69,13 +69,19 @@ export const POST = async (req: NextRequest) => {
 			return NextResponse.json({ message: "unauthorized" }, { status: 403 });
 		}
 		const body = await req.json();
-		const { name, code } = body;
-		if (!name || !code) {
+		const { name, code, franchiseId, adminId } = body;
+		if (!name || !code || !franchiseId || !adminId) {
 			return NextResponse.json(
 				{ message: "name or code are missing" },
 				{ status: 400 },
 			);
 		}
+		console.log("Creating chapter with data:", {
+			name,
+			code,
+			franchiseId,
+			adminId,
+		});
 		const user = await prisma.franchiseAdmin.findUnique({
 			where: {
 				id: session.user.id,
@@ -103,9 +109,10 @@ export const POST = async (req: NextRequest) => {
 			data: {
 				name,
 				code,
-				parentFranchiseAdminId: session.user.id,
+				parentFranchiseAdminId: adminId,
+
 				regionId: user.franchise.region.id,
-				regionalFranchiseId: user.franchise.id,
+				regionalFranchiseId: franchiseId,
 			},
 		});
 		return NextResponse.json(

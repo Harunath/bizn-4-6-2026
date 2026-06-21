@@ -23,6 +23,11 @@ const page = () => {
 					href="/regional-franchise/chapters">
 					Chapters
 				</Link>
+				<Link
+					className="text-blue-500 hover:text-blue-700 transition duration-300"
+					href="/regional-franchise/create-user">
+					Create User
+				</Link>
 			</div>
 			<h2 className=" text-3xl text-red-500">Regional dashboard</h2>
 			<p>

@@ -21,6 +21,7 @@ const page = async () => {
 		},
 		include: {
 			franchiseAdmin: true,
+			chapters: true,
 		},
 	});
 
@@ -35,18 +36,36 @@ const page = async () => {
 					<div key={franchise.id} className="p-4 mb-4 border rounded shadow">
 						<h3>{franchise.businessName}</h3>
 						{franchise.franchiseAdmin ? (
-							<p>
-								Admin:{" "}
-								{franchise.franchiseAdmin.firstName +
-									" " +
-									franchise.franchiseAdmin.lastName}
-							</p>
+							<>
+								<p>
+									Admin:{" "}
+									{franchise.franchiseAdmin.firstName +
+										" " +
+										franchise.franchiseAdmin.lastName}
+								</p>
+								{franchise.chapters.length > 0 ? (
+									<p>
+										Chapter:{" "}
+										{franchise.chapters[0]?.name +
+											" " +
+											franchise.chapters[0]?.code}
+									</p>
+								) : (
+									<Link
+										href={`./chapter-franchise/${franchise.id}/create-chapter`}
+										className="text-blue-500 hover:text-blue-700 transition duration-300">
+										Create chapter
+									</Link>
+								)}
+							</>
 						) : (
-							<Link
-								href={`./chapter-franchise/${franchise.id}`}
-								className="text-blue-500 hover:text-blue-700 transition duration-300">
-								Assign Admin
-							</Link>
+							<>
+								<Link
+									href={`./chapter-franchise/${franchise.id}`}
+									className="text-blue-500 hover:text-blue-700 transition duration-300">
+									Assign Admin
+								</Link>
+							</>
 						)}
 					</div>
 				))
