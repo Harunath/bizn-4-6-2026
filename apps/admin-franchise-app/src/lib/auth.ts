@@ -46,6 +46,8 @@ export const authOptions: NextAuthOptions = {
 						isAdmin: false,
 						isFranchiseAdmin: true,
 						franchiseType: franchiseAdmin.franchise.franchiseType,
+						franchiseId: franchiseAdmin.franchise.id,
+						franchiseName: franchiseAdmin.franchise.businessName,
 					};
 				}
 				// Find user in database
@@ -145,6 +147,8 @@ export const authOptions: NextAuthOptions = {
 					token.isAdmin = false;
 					token.isFranchiseAdmin = true;
 					token.franchiseType = franchiseAdmin.franchise.franchiseType;
+					token.franchiseId = franchiseAdmin.franchise.id;
+					token.franchiseName = franchiseAdmin.franchise.businessName;
 				}
 			}
 			return token;
@@ -161,6 +165,8 @@ export const authOptions: NextAuthOptions = {
 				session.user.franchiseType = token.franchiseType as
 					| FranchiseType
 					| undefined;
+				session.user.franchiseId = token.franchiseId as string | undefined;
+				session.user.franchiseName = token.franchiseName as string | undefined;
 			}
 			return session;
 		},

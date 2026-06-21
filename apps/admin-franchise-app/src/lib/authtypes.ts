@@ -9,6 +9,8 @@ declare module "next-auth" {
 		isAdmin: boolean;
 		isFranchiseAdmin: boolean;
 		franchiseType?: FranchiseType;
+		franchiseId?: string;
+		franchiseName?: string;
 	}
 
 	interface Session {
