@@ -33,11 +33,13 @@ function reviveProfile(w: ProfilePropsWire): ProfileProps {
 		chapterId: w.chapterId,
 
 		// ✅ handle nullable relation + fill defaults for possibly-undefined fields
-		businessDetails: {
-			...w.businessDetails,
-			createdAt: reviveDate(w.businessDetails.createdAt)!,
-			updatedAt: reviveDate(w.businessDetails.updatedAt)!,
-		},
+		businessDetails: w.businessDetails
+			? {
+					...w.businessDetails,
+					createdAt: reviveDate(w.businessDetails.createdAt)!,
+					updatedAt: reviveDate(w.businessDetails.updatedAt)!,
+				}
+			: null,
 
 		emailVerified: w.emailVerified,
 		phone: w.phone,

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { FcGoogle } from "react-icons/fc";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -18,34 +17,31 @@ export default function LoginPage() {
 	const router = useRouter();
 	const { data: session } = useSession();
 	useEffect(() => {
-		setLoading(true);
 		if (session && session.user) {
 			const getUser = async () => {
+				setLoading(true);
+
 				const res = await fetch(`/api/user/${session.user.id}`);
 				const data = await res.json();
 				if (data.message == "success") {
-					if (data.data.registrationCompleted) {
-						router.push("/");
-					} else {
-						router.push("/register");
-					}
+					router.push("/");
 				}
+				setLoading(false);
 			};
 			getUser();
 		}
-		setLoading(false);
 	}, [session, router]);
-	const handleGoogleSignIn = async () => {
-		setLoading(true);
-		try {
-			await signIn("google", { callbackUrl: "/" });
-		} catch (error) {
-			console.error("Google sign-in failed: ", error);
-			setError("Google sign-in failed.");
-		} finally {
-			setLoading(false);
-		}
-	};
+	// const handleGoogleSignIn = async () => {
+	// 	setLoading(true);
+	// 	try {
+	// 		await signIn("google", { callbackUrl: "/" });
+	// 	} catch (error) {
+	// 		console.error("Google sign-in failed: ", error);
+	// 		setError("Google sign-in failed.");
+	// 	} finally {
+	// 		setLoading(false);
+	// 	}
+	// };
 
 	const handleCredentialsSignIn = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -95,7 +91,7 @@ export default function LoginPage() {
 
 					{error && <p className="text-red-500 text-sm mb-4">{error}</p>}
 
-					<button
+					{/* <button
 						onClick={handleGoogleSignIn}
 						className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 rounded-lg px-4 py-2 text-gray-700 hover:bg-gray-100 mb-4"
 						disabled={loading}>
@@ -110,7 +106,7 @@ export default function LoginPage() {
 						<div className="absolute inset-0 flex items-center">
 							<div className="w-full border-t border-gray-300" />
 						</div>
-					</div>
+					</div> */}
 
 					<form onSubmit={handleCredentialsSignIn} className="space-y-4">
 						<input

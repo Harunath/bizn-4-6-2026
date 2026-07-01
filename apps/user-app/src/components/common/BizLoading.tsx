@@ -25,8 +25,9 @@ const BizLoading = () => {
 					router.push("/logout");
 				}
 				const data = await res.json();
+				console.log("User data:", data.data);
 				if (data.message == "success") {
-					setRoute(data.data.chapterId ? "/" : "/logout");
+					setRoute(data.data.chapterId ? "/dashboard" : "/logout");
 				}
 			};
 			getUser();

@@ -7,7 +7,7 @@ import { getProfileByUserId } from "../../../lib/server/profile";
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
-
+	console.log("session user : ", session?.user);
 	if (!session?.user?.id) {
 		return (
 			<div className="p-4">
@@ -22,6 +22,8 @@ export default async function Page() {
 	}
 
 	const { user, contactDetails } = await getProfileByUserId(session.user.id);
+	console.log("Profile page user:", user);
+	console.log("Profile page contactDetails:", contactDetails);
 
 	if (!user) {
 		return <div className="p-4 text-red-600">User not found</div>;

@@ -3,6 +3,7 @@ import { authOptions } from "../../lib/auth"; // Your NextAuth config
 import Navbar from "../../components/common/NavBar";
 import BackButton from "@repo/ui/BackButton";
 import { redirect } from "next/navigation";
+import prisma from "@repo/db/client";
 
 export default async function Layout({
 	children,
@@ -11,6 +12,22 @@ export default async function Layout({
 	if (!session || !session.user || !session.user.chapterId) {
 		// If no session or user data, you can choose to redirect or show an error
 		redirect("/logout"); // Redirect to login page if not authenticated
+	}
+	const user = await prisma.user.findUnique({
+		where: { id: session.user.id },
+		select: {
+			id: true,
+			personalDetails: true,
+			businessDetails: true,
+			chapterId: true,
+			contactDetails: true,
+		},
+	});
+	if (!user) {
+		redirect("/logout");
+	}
+	if (!user.personalDetails || !user.businessDetails || !user.contactDetails) {
+		redirect("/complete-profile");
 	}
 	const links = [
 		{ name: "Dashboard", href: "/dashboard" },

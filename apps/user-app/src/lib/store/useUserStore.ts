@@ -32,7 +32,7 @@ export interface ProfileProps {
 	lastname: string;
 	email: string;
 	chapterId: string;
-	businessDetails: BusinessDetails;
+	businessDetails: BusinessDetails | null;
 
 	emailVerified: boolean;
 	phone: string;

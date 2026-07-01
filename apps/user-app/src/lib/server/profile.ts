@@ -2,26 +2,12 @@
 "use server";
 
 import prisma from "@repo/db/client";
+import { BusinessDetails } from "@repo/db/client";
 
 // Wire types = Dates as string (safe to serialize to client)
-export interface BusinessDetailsWire {
-	id: string;
-	userId: string;
-	businessName: string;
-	images: string[];
-	panNumber: string | null;
-	panNumberVerified: boolean;
-	tanNumber: string | null;
-	gstNumber: string | null;
-	gstNumberVerified: boolean;
-	verified: boolean;
-	companyName: string | null;
-	companyLogoUrl: string | null;
-	gstRegisteredState: string | null;
-	BusinessDescription: string | null;
-	keywords: string | null;
-	generalCategory: string | null;
-	categoryId: string | null;
+
+export interface BusinessDetailsWire
+	extends Omit<BusinessDetails, "createdAt" | "updatedAt"> {
 	createdAt: string;
 	updatedAt: string;
 }
@@ -32,7 +18,7 @@ export interface ProfilePropsWire {
 	lastname: string;
 	email: string;
 	chapterId: string;
-	businessDetails: BusinessDetailsWire;
+	businessDetails: BusinessDetailsWire | null;
 
 	emailVerified: boolean;
 	phone: string;
@@ -85,29 +71,7 @@ export async function getProfileByUserId(userId: string): Promise<{
 				membershipEndDate: true,
 				createdAt: true,
 				updatedAt: true,
-				businessDetails: {
-					select: {
-						id: true,
-						userId: true,
-						businessName: true,
-						images: true,
-						panNumber: true,
-						panNumberVerified: true,
-						tanNumber: true,
-						gstNumber: true,
-						gstNumberVerified: true,
-						verified: true,
-						companyName: true,
-						companyLogoUrl: true,
-						gstRegisteredState: true,
-						BusinessDescription: true,
-						keywords: true,
-						generalCategory: true,
-						categoryId: true,
-						createdAt: true,
-						updatedAt: true,
-					},
-				},
+				businessDetails: true,
 			},
 		}),
 		prisma.contactDetails.findUnique({
@@ -130,21 +94,22 @@ export async function getProfileByUserId(userId: string): Promise<{
 	// Cast Dates -> ISO strings for wire types
 	const toISO = (d: Date | null | undefined) => (d ? d.toISOString() : null);
 
-	const userWire: ProfilePropsWire | null =
-		user && user.businessDetails
-			? {
-					...user,
-					membershipStartDate: toISO(user.membershipStartDate)!,
-					membershipEndDate: toISO(user.membershipEndDate)!,
-					createdAt: user.createdAt.toISOString(),
-					updatedAt: user.updatedAt.toISOString(),
-					businessDetails: {
-						...user.businessDetails,
-						createdAt: user.businessDetails.createdAt.toISOString(),
-						updatedAt: user.businessDetails.updatedAt.toISOString(),
-					},
-				}
-			: null;
+	const userWire: ProfilePropsWire | null = user
+		? {
+				...user,
+				membershipStartDate: toISO(user.membershipStartDate)!,
+				membershipEndDate: toISO(user.membershipEndDate)!,
+				createdAt: user.createdAt.toISOString(),
+				updatedAt: user.updatedAt.toISOString(),
+				businessDetails: user.businessDetails
+					? {
+							...user.businessDetails,
+							createdAt: user.businessDetails.createdAt.toISOString(),
+							updatedAt: user.businessDetails.updatedAt.toISOString(),
+						}
+					: null,
+			}
+		: null;
 
 	const contactWire: ContactDetailsWire | null = contact
 		? {
